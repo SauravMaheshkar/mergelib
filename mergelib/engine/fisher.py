@@ -94,8 +94,10 @@ def fisher_merge(
         lhs, rhs = [], []
         for i, (param, coefficient, aux) in enumerate(zip(params, coeff, aux_matrices)):
             diag = aux if isinstance(aux, float) else aux[idx]
+            if isinstance(diag, float):
+                diag = torch.full_like(param[idx], diag)
             if i == 0:
-                diag = torch.clamp(diag, min=1e-6)
+                diag = torch.maximum(torch.full_like(diag, 1e-6), diag)
             lhs.append(coefficient * diag)
             rhs.append(coefficient * diag * param[idx])
 

@@ -27,8 +27,11 @@ flags:
 computing fisher matrix: 100%|██████████████████████████████████████████████████████████████████| 139/139 [03:15<00:00,  1.41s/it]
 computing fisher matrix: 100%|██████████████████████████████████████████████████████████████████| 139/139 [04:57<00:00,  2.14s/it]
 trying different coefficients: 100%|██████████████████████████████████████████████████████████████| 25/25 [12:08<00:00, 29.14s/it]
-Best result: {'accuracy': 0.7978339350180506}
-Best coefficients: (0.16666666666666666, 0.8333333333333334)
+Best fisher result: {'accuracy': 0.7978339350180506}
+Best fisher coefficients: (0.16666666666666666, 0.8333333333333334)
+trying different coefficients: 100%|██████████████████████████████████████| 25/25 [11:42<00:00, 28.10s/it]
+Best isotropic result: {'accuracy': 0.7870036101083032}
+Best isotropic coefficients: (0.8333333333333334, 0.16666666666666663)
 ```
 
 #### References

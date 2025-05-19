@@ -43,8 +43,8 @@ def main(_):
     # ======== load metric ========
     metric = evaluate.load("glue", FLAGS.task_name)
 
-    # ======== merge ========
-    _merged_model, best_result, best_coeff = merge(
+    # ======== fisher merge ========
+    _fisher_merged_model, best_fisher_result, best_fisher_coeff = merge(
         models,
         ds,
         metric,
@@ -53,8 +53,22 @@ def main(_):
         num_coefficients=FLAGS.num_coefficients,
     )
 
-    print(f"Best result: {best_result}")
-    print(f"Best coefficients: {best_coeff}")
+    print(f"Best fisher result: {best_fisher_result}")
+    print(f"Best fisher coefficients: {best_fisher_coeff}")
+
+    # ======== isotropic merge ========
+    _isotropic_merged_model, best_result, best_coeff = merge(
+        models,
+        ds,
+        metric,
+        coefficient_type="grid",
+        method="isotropic",
+        normalize=False,
+        num_coefficients=FLAGS.num_coefficients,
+    )
+
+    print(f"Best isotropic result: {best_result}")
+    print(f"Best isotropic coefficients: {best_coeff}")
 
 
 if __name__ == "__main__":

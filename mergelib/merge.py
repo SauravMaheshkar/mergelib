@@ -38,6 +38,8 @@ def merge(
     # ======== compute auxilary matrices ========
     if method == "fisher":
         aux_matrices = [compute_fisher_matrices(model, dataset) for model in models]
+    elif method == "isotropic":
+        aux_matrices = [1.0] * len(models)
     else:
         raise ValueError(f"Invalid method: {method}")
 
