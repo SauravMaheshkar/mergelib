@@ -9,7 +9,7 @@ def clone(model: nn.Module) -> nn.Module:
 
 def get_mergeable_variables(model: nn.Module) -> list[nn.Parameter]:
     for name, child in model.named_children():
-        if name == "classifier":
+        if name in ["classifier", "dropout"]:
             continue
         else:
             body = child

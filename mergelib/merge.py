@@ -5,7 +5,7 @@ from evaluate import EvaluationModule
 from tqdm import tqdm
 
 from .coefficients import grid_coefficients, random_coefficients
-from .engine.fisher import compute_fisher_matrices, fisher_merge
+from .engine.fisher import compute_fisher_matrices
 from .utils import clone, get_mergeable_variables, set_mergeable_variables
 
 
@@ -47,18 +47,30 @@ def merge(
 
     if normalize:
         for aux_matrix in aux_matrices:
-            norm = torch.sqrt(sum(torch.sum(d**2) for d in aux_matrix))
+            norm = torch.sqrt(
+                torch.sum(torch.stack([torch.sum(d**2) for d in aux_matrix]))
+            )
             aux_matrix = [d / norm for d in aux_matrix]
 
     # ======== merge and evaluate for each coefficient ========
     results_and_params = []
     for coeff in tqdm(coefficients, desc="trying different coefficients"):
-        fisher_merge(
-            params=params,
-            merged_params=merged_params,
-            coeff=coeff,
-            aux_matrices=aux_matrices,
-        )
+        for idx, merged_param in enumerate(merged_params):
+            lhs, rhs = [], []
+            for i, (param, coefficient, aux) in enumerate(
+                zip(params, coeff, aux_matrices)
+            ):
+                diag = aux if isinstance(aux, float) else aux[idx]
+                if isinstance(diag, float):
+                    diag = torch.full_like(param[idx], diag)
+                if i == 0:
+                    diag = torch.maximum(torch.full_like(diag, 1e-6), diag)
+                lhs.append(coefficient * diag)
+                rhs.append(coefficient * diag * param[idx])
+
+            rhs_sum = torch.sum(torch.stack(rhs), dim=0)
+            lhs_sum = torch.sum(torch.stack(lhs), dim=0)
+            merged_param.data.copy_(rhs_sum / lhs_sum)
 
         # ======== evaluate ========
         for batch in dataset:

@@ -79,30 +79,3 @@ def compute_fisher_matrices(
 
     fishers = [fisher / n_examples for fisher in fishers]
     return fishers
-
-
-def fisher_merge(
-    params: list[list[torch.nn.Parameter]],
-    merged_params: list[torch.nn.Parameter],
-    coeff: list,
-    aux_matrices: list,
-):
-    assert len({len(merged_params)} | set(len(v) for v in params)) == 1
-    assert len(aux_matrices) == len(params)
-
-    for idx, merged_param in enumerate(merged_params):
-        lhs, rhs = [], []
-        for i, (param, coefficient, aux) in enumerate(zip(params, coeff, aux_matrices)):
-            diag = aux if isinstance(aux, float) else aux[idx]
-            if isinstance(diag, float):
-                diag = torch.full_like(param[idx], diag)
-            if i == 0:
-                diag = torch.maximum(torch.full_like(diag, 1e-6), diag)
-            lhs.append(coefficient * diag)
-            rhs.append(coefficient * diag * param[idx])
-
-        rhs_sum = torch.sum(torch.stack(rhs), dim=0)
-        lhs_sum = torch.sum(torch.stack(lhs), dim=0)
-        merged_param.data.copy_(rhs_sum / lhs_sum)
-
-    return merged_params

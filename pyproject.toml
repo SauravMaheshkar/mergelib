@@ -25,7 +25,9 @@ examples = [
     "absl-py>=2.2.2",
     "datasets>=3.6.0",
     "scipy",
-    "scikit-learn"
+    "scikit-learn",
+    "wandb>=0.19.11",
+    "python-dotenv>=1.1.0",
 ]
 
 [tool.ruff.lint]
