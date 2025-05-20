@@ -4,6 +4,8 @@ uv sync --group examples
 
 ### 1. Fisher-Weighted Averaging on the GLUE dataset
 
+![https://wandb.ai/sauravmaheshkar/fisher-merging/reports/glue-validation-set-accuracy-using-different-ensembling-method--VmlldzoxMjg2MTA0Ng](https://raw.githubusercontent.com/wandb/assets/main/wandb-github-badge-28.svg)
+
 ```bash
 USAGE: /examples/fisher_weightage.py [flags]
 
